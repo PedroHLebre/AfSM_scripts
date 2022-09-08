@@ -28,19 +28,7 @@ physeq = phyloseq(AfSM_otu, AfSM_sampledata)
 #for prokaryotic data, I do an initial filtering step to remove any mislabelled taxa. Additionally, we can also implement a filtering step to remove any OTUs that are less than a specific number of counts. 
 physeq_Prokaryotes = subset_taxa( physeq,tax_table(physeq) != "Eukaryota")
 
-physeq_species = tax_glom(physeq_Prokaryotes, taxrank = "Phylum", NArm = F)
-physeq_Bacteria = subset_taxa (physeq_species, Domain == "Bacteria") 
-physeq_ACE_bac_RA = transform_sample_counts(physeq_Bacteria, function (x) x/sum(x))
-
-write.csv(otu_table(physeq_species), "otu_table_S16_class.csv")
-write.csv(otu_table(physeq_ACE_bac_RA), "otu_table_bacteria_phylotype_RA.csv")
-write.csv(tax_table(physeq_species), "tax_table_S16_class.csv")
-write.csv(sample_data(physeq_Archea_phylotype), "metadata_table_archaea_phylotype.csv")
-
-
-physeq_bact_filter = filter_taxa(physeq_Bacteria, function(x) count(x) > (0.5*length(x)), TRUE)
-
-#if we want to filter out any OTUS with less than 10 reads(I tend to do this manually)
+#if we want to filter out any OTUS with less than 10 reads
 physeq_cutoff = filter_taxa(physeq_Prokaryotes, function(x) sum(x) > 10, TRUE)
 
 #The next step would be to rarefy the data to an even depth
